@@ -1,76 +1,92 @@
-type AddressType = {
-  zip: string
-  street: string
+interface Builder {
+  buildRoof: () => void
+  buildDoor: () => void
+  buildBathRoom: () => void
+  buildLivingRoom: () => void
 }
 
-type UserType = {
-  name: string
-  age?: number
-  phone?: string
-  address?: AddressType
-}
+class HouseBuilder implements Builder {
+  private house!: House
 
-class Address {
-  constructor(public zip: string, public street: string) {}
-}
+  constructor() {
+    this.reset()
+  }
 
-// Solution 1
-// class User {
-//   constructor(public name: string) {}
-// }
+  reset() {
+    this.house = new House()
+  }
 
-// class UserBuilder {
-//   user: UserType
-//
-//   constructor(name: string) {
-//     this.user = new User(name)
-//   }
-//
-//   setAge(age: number) {
-//     this.user.age = age
-//     return this
-//   }
-//
-//   setPhone(phone: string) {
-//     this.user.phone = phone
-//     return this
-//   }
-//
-//   setAddress(address: AddressType) {
-//     this.user.address = address
-//     return this
-//   }
-//
-//   build() {
-//     return this.user
-//   }
-// }
-//
-// let user = new UserBuilder('Bob')
-//   .setAge(10)
-//   .setAddress(new Address('111', 'Main'))
-//   .build()
-// console.log(user)
+  buildRoof() {
+    this.house.buildMoreStuff('Roof')
+  }
 
-// Solution 2
-class User {
-  name: string
-  age?: number
-  phone?: string
-  address?: AddressType
+  buildDoor() {
+    this.house.buildMoreStuff('Door')
+  }
 
-  constructor(
-    name: string,
-    { age, phone, address }: Omit<UserType, 'name'> = {}
-  ) {
-    this.name = name
-    this.age = age
-    this.phone = phone
-    this.address = address
+  buildBathRoom() {
+    this.house.buildMoreStuff('Room')
+  }
+
+  buildLivingRoom() {
+    this.house.buildMoreStuff('Living room')
+  }
+
+  getHouse() {
+    const house = this.house
+    this.reset()
+    return house
   }
 }
 
-const user = new User('Bob', { age: 10, address: new Address('111', 'Main') })
-console.log(user)
+class House {
+  stuffs: string[]
+
+  constructor() {
+    this.stuffs = [] 
+  }
+
+  buildMoreStuff(stuff: string) {
+    this.stuffs.push(stuff)
+  }
+
+  getStuffs() {
+    return this.stuffs
+  }
+}
+
+class Director {
+  private builder!: Builder
+
+  setBuilder(builder: Builder) {
+    this.builder = builder
+  }
+  
+  buildThreeStuff() {
+    this.builder.buildDoor()
+    this.builder.buildRoof()
+    this.builder.buildBathRoom()
+  }
+
+  buildOneStuff() {
+    this.builder.buildLivingRoom()
+  }
+}
+
+function client(director: Director) {
+  const houseBuilder = new HouseBuilder()
+  director.setBuilder(houseBuilder)
+
+  director.buildOneStuff()
+  const houseOne = houseBuilder.getHouse()
+  console.log('House 1', houseOne.getStuffs())
+
+  director.buildThreeStuff()
+  const houseTwo = houseBuilder.getHouse()
+  console.log('House 2', houseTwo.getStuffs())
+}
+
+const director = new Director()
+client(director)
 
 export {}
