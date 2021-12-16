@@ -17,19 +17,23 @@ class HouseBuilder implements Builder {
   }
 
   buildRoof() {
-    this.house.buildMoreStuff('Roof')
+    this.house.setRoof('Roof')
+    return this
   }
 
   buildDoor() {
-    this.house.buildMoreStuff('Door')
+    this.house.setDoor('Door')
+    return this
   }
 
   buildBathRoom() {
-    this.house.buildMoreStuff('Room')
+    this.house.setBathRoom('Room')
+    return this
   }
 
   buildLivingRoom() {
-    this.house.buildMoreStuff('Living room')
+    this.house.setLivingRoom('Living room')
+    return this
   }
 
   getHouse() {
@@ -40,14 +44,50 @@ class HouseBuilder implements Builder {
 }
 
 class House {
-  stuffs: string[]
+  private stuffs: string[]
+  private roof!: string
+  private livingRoom!: string
+  private bathRoom!: string
+  private door!: string
 
   constructor() {
     this.stuffs = [] 
   }
 
-  buildMoreStuff(stuff: string) {
-    this.stuffs.push(stuff)
+  setRoof(roof: string) {
+    this.roof = roof
+    this.stuffs.push(roof)
+  }
+
+  setDoor(door: string) {
+    this.door = door
+    this.stuffs.push(door)
+  }
+
+  setLivingRoom(livingRoom: string) {
+    this.livingRoom = livingRoom
+    this.stuffs.push(livingRoom)
+  }
+
+  setBathRoom(bathRoom: string) {
+    this.bathRoom = bathRoom
+    this.stuffs.push(bathRoom)
+  }
+
+  getRoof() {
+    return this.roof
+  }
+
+  getBathRoom() {
+    return this.bathRoom
+  }
+
+  getLivingRoom() {
+    return this.livingRoom
+  }
+
+  getDoor() {
+    return this.door
   }
 
   getStuffs() {
@@ -61,15 +101,20 @@ class Director {
   setBuilder(builder: Builder) {
     this.builder = builder
   }
-  
-  buildThreeStuff() {
-    this.builder.buildDoor()
-    this.builder.buildRoof()
-    this.builder.buildBathRoom()
-  }
 
   buildOneStuff() {
     this.builder.buildLivingRoom()
+  }
+
+  buildTwoStuffs() {
+    this.builder.buildDoor()
+    this.builder.buildLivingRoom()
+  }
+  
+  buildThreeStuffs() {
+    this.builder.buildDoor()
+    this.builder.buildRoof()
+    this.builder.buildBathRoom()
   }
 }
 
@@ -81,9 +126,13 @@ function client(director: Director) {
   const houseOne = houseBuilder.getHouse()
   console.log('House 1', houseOne.getStuffs())
 
-  director.buildThreeStuff()
+  director.buildTwoStuffs()
   const houseTwo = houseBuilder.getHouse()
   console.log('House 2', houseTwo.getStuffs())
+
+  director.buildThreeStuffs()
+  const houseThree = houseBuilder.getHouse()
+  console.log('House 3', houseThree.getStuffs())
 }
 
 const director = new Director()
