@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
-    "dev": "nodemon dist/index.js"
+    "dev": "nodemon dist/index.js",
+    "java_run": "find -name \"*.java\" > source.txt && javac @source.txt && rm source.txt && cd ./src/java && java Main"
   },
   "keywords": [],
   "author": "",
